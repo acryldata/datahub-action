@@ -1,6 +1,6 @@
-# DataHub Ingest Action
+# DataHub Action
 
-This GitHub Action enables ingesting metadata using the DataHub CLI via your GitHub workflow
+This GitHub Action enables using the DataHub CLI via your GitHub workflow
 
 ## Usage
 
@@ -10,14 +10,14 @@ DataHub instance that is the target.
 
 ## Inputs
 
-| Input                 | Description                                                                                                         | Example           |
-|-----------------------|---------------------------------------------------------------------------------------------------------------------|-------------------|
-| datahub-server        | URL to your DataHub instance GMS                                                                                    | `https://<customer>.acryl.io/gms` |
-| datahub-token         | Personal Access Token to use to connect to DataHub                                                                  |                   |
-| command               | DataHub Ingestion CLI Command with all required arguments. <br/>This will be invoked as  `datahub ingest <command>` | `mcps mcp.json`    |
-| optional-dependencies | Optional dependencies to install with datahub cli based on <br/>specific sources being used                         | `mysql,postgres`  |
-| datahub-version       | Optional datahub version override. Defaults to the latest version                                                   | |
-| python-version        | Optional python version override                                                                                    | |
+| Input                 | Description                                                                                                         | Example                               |
+|-----------------------|---------------------------------------------------------------------------------------------------------------------|---------------------------------------|
+| datahub-server        | URL to your DataHub instance GMS                                                                                    | `https://<customer>.acryl.io/gms`     |
+| datahub-token         | Personal Access Token to use to connect to DataHub                                                                  |                                       |
+| command               | DataHub  CLI Command with all required arguments. <br/>This will be invoked as  `datahub <command>` | `ingest -c /path/to/recipe.dhub.yaml` |
+| optional-dependencies | Optional dependencies to install with datahub cli based on <br/>specific sources being used                         | `mysql,postgres`                      |
+| datahub-version       | Optional datahub version override. Defaults to the latest version                                                   |                                       |
+| python-version        | Optional python version override                                                                                    |                                       |
 
 ## Example 
 
@@ -50,9 +50,9 @@ jobs:
         with:
           datahub-server: ${{ vars.DATAHUB_GMS_URL }}
           datahub-token: ${{ secrets.DATAHUB_PAT }}
-          command: mcps ${{ github.workspace }}/ingest.json
+          command: ingest mcps ${{ github.workspace }}/ingest.json
 
 ```
 
 ## Reference
-For full list of command options that can be used, refer to [DataHub CLI Ingestion](https://datahubproject.io/docs/metadata-ingestion/cli-ingestion)
+For full list of command options that can be used, refer to [DataHub CLI](https://datahubproject.io/docs/cli/)
