@@ -1,5 +1,5 @@
 name: 'datahub'
-description: 'GitHub Action that ingests metadata into DataHub'
+description: 'GitHub Action that runs the DataHub CLI'
 
 inputs:
   datahub-server:
@@ -9,13 +9,13 @@ inputs:
     description: Personal Access Token to authenticate to DataHub
     required: true
   command:
-    description: The ingestion command to run with its arguments
+    description: The DataHub CLI command to run with its arguments
     required: true
   datahub-version:
     description: Datahub CLI version to use. Defaults to latest version
     required: false
   optional-dependencies:
-    description: Comma separated list of optional ingestion dependencies to install
+    description: Comma separated list of optional dependencies to install
     default: datahub-rest
     required: false
   python-version:
@@ -34,9 +34,9 @@ runs:
       shell: bash
       run: pip install acryl-datahub[${{ inputs.optional-dependencies }}]${{ inputs.datahub-version != '' && format('=={0}', inputs.datahub-version) || '' }}
 
-    - name: Run ingestion
+    - name: Run DataHub CLI
       shell: bash
       env:
         DATAHUB_GMS_URL: "${{ inputs.datahub-server }}"
         DATAHUB_GMS_TOKEN: "${{ inputs.datahub-token }}"
-      run: datahub ingest ${{ inputs.command }}
+      run: datahub ${{ inputs.command }}
