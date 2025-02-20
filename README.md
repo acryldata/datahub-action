@@ -46,7 +46,7 @@ jobs:
           ./generate-mcps $GITHUB_WORKSPACE/ingest.json
 
       - name: Ingest the file produced
-        uses: acryldata/datahub-ingest-action@main
+        uses: acryldata/datahub-action@main
         with:
           datahub-server: ${{ vars.DATAHUB_GMS_URL }}
           datahub-token: ${{ secrets.DATAHUB_PAT }}

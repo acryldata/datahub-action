@@ -29,7 +29,6 @@ runs:
       uses: actions/setup-python@v5
       with:
         python-version: ${{ inputs.python-version }}
-        cache: "pip"
     - name: Install Datahub CLI
       shell: bash
       run: pip install acryl-datahub[${{ inputs.optional-dependencies }}]${{ inputs.datahub-version != '' && format('=={0}', inputs.datahub-version) || '' }}
