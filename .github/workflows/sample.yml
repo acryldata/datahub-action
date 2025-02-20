@@ -1,0 +1,48 @@
+name: Sample to ingest datasets via a PR process
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - test-main
+
+jobs:
+  detect-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
+
+      - name: Detect changed files
+        id: changed-files
+        uses: tj-actions/changed-files@v41
+
+      - name: Create file matrix
+        id: set-matrix
+        run: |
+          FILES_JSON=$(echo '${{ steps.changed-files.outputs.all_changed_files }}' | jq -R -s -c 'split(" ")')
+          echo "matrix={\"file\":$FILES_JSON}" >> $GITHUB_OUTPUT
+
+  process-files:
+    needs: detect-files
+    if: needs.detect-files.outputs.matrix != ''
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.detect-files.outputs.matrix)}}
+    steps:
+      - name: Validate PR, do a dry-run
+        if: github.event_name == 'pull_request'
+        uses: acryldata/datahub-ingest-action@main
+        with:
+          datahub-server: your-server
+          datahub-token: your-PAT
+          command: ingest --dry-run mcps ${{ matrix.file }}
+      - name: Process file for merge
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        uses: acryldata/datahub-ingest-action@main
+        with:
+          datahub-server: your-server
+          datahub-token: your-PAT
+          command: ingest mcps ${{ matrix.file }}
