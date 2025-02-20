@@ -9,6 +9,8 @@ on:
 
 jobs:
   detect-files:
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -32,16 +34,20 @@ jobs:
     strategy:
       matrix: ${{fromJson(needs.detect-files.outputs.matrix)}}
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
       - name: Validate PR, do a dry-run
         if: github.event_name == 'pull_request'
-        uses: acryldata/datahub-ingest-action@main
+        uses: acryldata/datahub-action@v1
         with:
           datahub-server: your-server
           datahub-token: your-PAT
           command: ingest --dry-run mcps ${{ matrix.file }}
       - name: Process file for merge
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: acryldata/datahub-ingest-action@main
+        uses: acryldata/datahub-action@v1
         with:
           datahub-server: your-server
           datahub-token: your-PAT
